@@ -9,6 +9,7 @@ public class Main {
 
     public static void battleshipGame() {
         // TODO: Add your code here (and add more methods).
+        check
     }
 
 
