@@ -7,6 +7,26 @@ public class Main {
     public static Scanner scanner;
     public static Random rnd;
 
+    userTurn() {
+        printBoard()
+        while (){
+            getPoint()
+            if (!inBoard()) continue
+            if (!newPoint()) continue
+        }
+        if (!ishit()) {
+            updateBoards()
+            print
+        }
+        else {
+            updateBoards()
+            isdrowned()
+
+        }
+
+    }
+
+
     public static void battleshipGame() {
         // TODO: Add your code here (and add more methods).
         int boardSize = [ , ]
@@ -22,20 +42,11 @@ public class Main {
         computerBattelships = countBatlleshpis()
 
         while (userBattelships > 0 && computerBattelships > 0) {
-            userTurn() // contains counting battleships
-            ComputerTurn() // contains counting battleships
+            computerBattelships -= userTurn()
+            userBattelships -= ComputerTurn()
         }
 
-        winnerEnnouncment()
-
-
-
-
-
-
-        check yam
-         //       i hope we will finish this on time
-        more stuff
+        winnerEnnouncement()
     }
 
 
