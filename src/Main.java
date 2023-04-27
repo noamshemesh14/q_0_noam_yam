@@ -9,6 +9,30 @@ public class Main {
 
     public static void battleshipGame() {
         // TODO: Add your code here (and add more methods).
+        int boardSize = [ , ]
+        getBoardSize();
+        char userGameBorad[][] =
+        char userGuessingBorad[][] =
+        char ComputerGameBorad[][] =
+        char ComputerGuessingBorad[][] =
+        initializeBoards();
+        placeBattleships();
+
+        userBattelships = countBatlleshpis()
+        computerBattelships = countBatlleshpis()
+
+        while (userBattelships > 0 && computerBattelships > 0) {
+            userTurn() // contains counting battleships
+            ComputerTurn() // contains counting battleships
+        }
+
+        winnerEnnouncment()
+
+
+
+
+
+
         check yam
          //       i hope we will finish this on time
         more stuff
