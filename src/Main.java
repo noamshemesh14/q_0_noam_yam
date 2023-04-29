@@ -18,8 +18,10 @@ public class Main {
 
 
     /**
-     *
-     * @return
+     * Gets board size. rows (r) and columns (c) numbers, 
+     * in the following format as a string: "rXc".
+     * 
+     * @return an array of 2 integers 
      */
     public static int[] getBoardSize() {
         System.out.println("Enter the board size");
@@ -33,10 +35,11 @@ public class Main {
     }
 
     /**
+     * Creates a board, 2D array, of chars '-'
      *
-     * @param rows
-     * @param columns
-     * @return
+     * @param rows the number of rows in the board
+     * @param columns the number of columns in the board
+     * @return an empty game or guessing board filled with '-' char
      */
     public static char[][] createBoard(int rows, int columns) {
         char[][] board = new char[rows][columns];
@@ -203,7 +206,7 @@ public class Main {
 
         for (int[] type : battleships) {
             for (int i =0 ; i < type[0] ; i++) {
-                int[] position;
+                int[] position = new int[0];
                 if (player.equals("user")) {
                     System.out.println("Your current game board:");
                     printBoard(rows, columns, board);
