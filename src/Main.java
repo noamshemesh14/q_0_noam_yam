@@ -58,39 +58,35 @@ public class Main {
     }
     public static int isDrowned(int row , int col, int x, int y, char[][] borad){
         if ((x > 0 && borad[x-1][y] == EMPTY) && (x < row-1 && borad[x+1][y] == EMPTY)){
-            while (borad[x][y] != EMPTY) {
-                int new_x = x;
-                while (new_x > 0) {
-                    if (borad[new_x - 1][y] == IS_BATTLESHIP) {
-                        return 0;
-                    }
-                    new_x--;
+            int new_x = x;
+            while (new_x > 0 && borad[new_x][y] != EMPTY)  {
+                if (borad[new_x - 1][y] == IS_BATTLESHIP) {
+                    return 0;
                 }
-                new_x = x;
-                while (new_x < row-1) {
-                    if (borad[x + 1][y] == IS_BATTLESHIP) {
-                        return 0;
-                    }
-                    new_x++;
+                new_x--;
+            }
+            new_x = x;
+            while (new_x < row-1 && borad[new_x][y] != EMPTY) {
+                if (borad[x + 1][y] == IS_BATTLESHIP) {
+                    return 0;
                 }
+                new_x++;
             }
         }
         if ((y > 0 && borad[x][y-1] == EMPTY) && (y < col-1 && borad[x][y+1] == EMPTY)){
-            while (borad[x][y] != EMPTY) {
-                int new_y = y;
-                while (new_y > 0) {
-                    if (borad[x][new_y-1] == IS_BATTLESHIP) {
-                        return 0;
-                    }
-                    new_y--;
+            int new_y = y;
+            while (new_y > 0 && borad[x][new_y] != EMPTY) {
+                if (borad[x][new_y-1] == IS_BATTLESHIP) {
+                    return 0;
                 }
-                new_y = y;
-                while (new_y < col-1) {
-                    if (borad[x][new_y+1] == IS_BATTLESHIP) {
-                        return 0;
-                    }
-                    new_y++;
+                new_y--;
+            }
+            new_y = y;
+            while (new_y < col-1 && borad[x][new_y] != EMPTY) {
+                if (borad[x][new_y + 1] == IS_BATTLESHIP) {
+                    return 0;
                 }
+                new_y++;
             }
         }
         return 1;
