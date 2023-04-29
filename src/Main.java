@@ -17,6 +17,10 @@ public class Main {
     static final char HIT_BATTLESHIP = 'X';
 
 
+    /**
+     *
+     * @return
+     */
     public static int[] getBoardSize() {
         System.out.println("Enter the board size");
         String input = scanner.next();
@@ -28,8 +32,14 @@ public class Main {
         return boardSize;
     }
 
+    /**
+     *
+     * @param rows
+     * @param columns
+     * @return
+     */
     public static char[][] createBoard(int rows, int columns) {
-        char board[][] = new char[rows][columns];
+        char[][] board = new char[rows][columns];
         for ( int i=0 ; i<rows ; i++) {
             for (int j=0 ; j<columns ; j++ ) {
                 board[i][j] = EMPTY;
@@ -40,14 +50,22 @@ public class Main {
 
     public static int[][] getBattleships() {
         String input = scanner.nextLine();
-        String tempBattleships[] = input.split(" ");
-        int battleships[][] = new int[tempBattleships.length][2]; // leagal?? its an attribute
+        String[] tempBattleships = input.split(" ");
+        int[][] battleships = new int[tempBattleships.length][2]; // leagal?? its an attribute
         for (int i=0 ; i < tempBattleships.length ; i++) {
-            String temp[] = (tempBattleships[i]).split("X");
+            String[] temp = (tempBattleships[i]).split("X");
             battleships[i][0] = Integer.parseInt(temp[0]);
             battleships[i][1] = Integer.parseInt(temp[1]);
         }
         return battleships;
+    }
+
+    public static int countBattleships(int[][] battleships) {
+        int amount = 0;
+        for (int[] type : battleships) {
+            amount += type[0];
+        }
+        return amount;
     }
 
     public static int[] positionByUser(int size) {
@@ -62,7 +80,7 @@ public class Main {
     }
 
     public static int[] positionByComputer(int rows , int columns) {
-        int position[] = new int[3];
+        int[] position = new int[3];
         position[0] = rnd.nextInt(rows-1);
         position[1] = rnd.nextInt(columns-1);
         position[2] = rnd.nextInt(2);
@@ -70,9 +88,7 @@ public class Main {
     }
 
     public static boolean isLegalOrientation(int orientation) {
-        if (orientation == HORIZONTAL || orientation == VERTICAL)
-            return true;
-        else return false;
+        return orientation == HORIZONTAL || orientation == VERTICAL;
     }
 
     public static boolean isLegalTile(int row, int column, int rowsNum, int columnsNum) {
@@ -80,7 +96,7 @@ public class Main {
             return false;
         if (column < 0 || column >= columnsNum )
             return false;
-        else return true;
+        return true;
     }
 
     public static boolean isInBoard(int[] position,int size, int rowsNum, int columnsNum) {
@@ -138,62 +154,69 @@ public class Main {
 
     public static boolean isValidPosition(int[] position, int size, char[][] board, String player ) {
         int rows = board.length;
-        int columns = (board[0]).length; // i can send rows & cols as vars to the func
+        int columns = (board[0]).length;
 
-        if (player == "user") {
+        if (player.equals("user")) {
             if(!isLegalOrientation(position[2])) {
                 System.out.println("Illegal orientation, try again!");
                 return false;
             }
-            if (!isLegalTile(position[0], position[1], rows, columns) {
+            if (!isLegalTile(position[0], position[1], rows, columns)) {
                 System.out.println("Illegal tile, try again!");
                 return false;
             }
         }
         if (!isInBoard(position, size, rows, columns)) {
-            if (player == "user")
+            if (player.equals("user"))
                 System.out.println("Battleship exceeds the boundaries of the board, try again!");
             return false;
         }
         if (isOverlapping(position, size, board)) {
-            if (player == "user")
+            if (player.equals("user"))
                 System.out.println("Battleship overlaps another battleship, try again");
             return false;
         }
         if (isAdjacent(position, size, board)) {
-            if (player == "user")
+            if (player.equals("user"))
                 System.out.println("Adjacent battleship detected, try again");
             return false;
         }
         else return true;
     }
 
-    public static void addBattleship() {
-
+    public static void addBattleship(int[] position, int size, char[][] board) {
+        for (int i=0 ; i<size ; i++) {
+            if (position[2] == HORIZONTAL)
+                board[position[0]][position[1]+i] = IS_BATTLESHIP;
+            else if (position[2] == VERTICAL)
+                board[position[0]+i][position[1]] = IS_BATTLESHIP;
+        }
     }
 
     public static void placeBattleships(
             int[][] battleships,
             char[][] board,
-            int rows, int columns,
             String player) {
+
+        int rows = board.length;
+        int columns = (board[0]).length;
 
         for (int[] type : battleships) {
             for (int i =0 ; i < type[0] ; i++) {
-                int position[];
-                if (player == "user") {
+                int[] position;
+                if (player.equals("user")) {
                     System.out.println("Your current game board:");
-                    printBoard(board);
+                    printBoard(rows, columns, board);
                 }
                 do {
-                    if (player == "user") {
+                    if (player.equals("user")) {
                         position = positionByUser(type[1]);
                     }
-                    else if (player == "computer") {
+                    else if (player.equals("computer")) {
                         position = positionByComputer(rows, columns);
                     }
-                } while (!isValidPosition(position, type[1], board, rows, columns, player));
-                addBattleship(board, position);
+                } while (!isValidPosition(position, type[1], board, player));
+                addBattleship(position, type[1], board);
             }
         }
     }
@@ -366,16 +389,16 @@ public class Main {
         placeBattleships(battleships, userGameBorad, "user");
         placeBattleships(battleships, userGameBorad, "computer");
 
-        userBattelships = countBatlleshpis()
-        computerBattelships = countBatlleshpis()
+        int userBattelships = countBattleships(battleships);
+        int computerBattelships = countBattleships(battleships);
 
         while (userBattelships > 0 && computerBattelships > 0) {
-            computerBattelships -= userTurn()
+            computerBattelships -= userTurn();
             if (computerBattelships <=0) break;
-            userBattelships -= ComputerTurn()
+            userBattelships -= ComputerTurn();
         }
 
-        winnerEnnouncement()
+        winnerAnnouncement();
     }
 
 
