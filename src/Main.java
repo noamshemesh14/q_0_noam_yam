@@ -301,7 +301,7 @@ public class Main {
         }
         return 1;
     }
-    public static int userTurn(char[][] userGuessingBorad, char[][] ComputerGameBorad, int r, int row , int col) {
+    public static int userTurn(char[][] userGuessingBorad, char[][] ComputerGameBorad, int computerBattelships, int row , int col) {
         System.out.println("Your current guessing board:");
         printBoard(row,col,userGuessingBorad);
         boolean goodPoint = true;
@@ -334,13 +334,13 @@ public class Main {
             updateBoards(x,y, userGuessingBorad, GOOD_GUESS);
             updateBoards(x,y, ComputerGameBorad, HIT_BATTLESHIP);
             if (isDrowned(row, col ,x ,y , ComputerGameBorad) == 1){
-                r--;
+                computerBattelships--;
                 System.out.println("The computer's battleship has been drowned,"+r+" more battleships to go!");
             }
         }
-        return r;
+        return computerBattelships;
     }
-    public static int ComputerTurn(char[][] ComputerGuessingBorad, char[][] userGameBorad, int r, int row , int col) {
+    public static int ComputerTurn(char[][] ComputerGuessingBorad, char[][] userGameBorad, int userBattelships, int row , int col) {
         boolean goodPoint = true;
         int x = 0, y = 0;
         while (goodPoint) {
@@ -364,13 +364,13 @@ public class Main {
             updateBoards(x,y, ComputerGuessingBorad, GOOD_GUESS);
             updateBoards(x,y, userGameBorad, HIT_BATTLESHIP);
             if (isDrowned(row, col ,x ,y , userGameBorad) == 1){
-                r--;
+                userBattelships--;
                 System.out.println("The computer's battleship has been drowned," +r+ " more battleships to go!");
             }
         }
         System.out.println("Your current game board:");
         printBoard(row,col,userGameBorad);
-        return r;
+        return userBattelships;
     }
 
 
@@ -392,13 +392,18 @@ public class Main {
         int userBattelships = countBattleships(battleships);
         int computerBattelships = countBattleships(battleships);
 
-        while (userBattelships > 0 && computerBattelships > 0) {
-            computerBattelships -= userTurn();
-            if (computerBattelships <=0) break;
-            userBattelships -= ComputerTurn();
-        }
 
-        winnerAnnouncement();
+        while (userBattelships > 0 && computerBattelships > 0) {
+            computerBattelships -= userTurn(userGuessingBorad, computerGameBorad,computerBattelships,rows,columns);
+            if (computerBattelships <= 0) break;
+            userBattelships -= ComputerTurn(computerGuessingBorad, userGameBorad , userBattelships,rows,columns);
+        }
+        if (userBattelships == 0) {
+            System.out.println("You lost ):");
+        }
+        else {
+            System.out.println("You won the game!");
+        }
     }
 
 
