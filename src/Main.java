@@ -161,6 +161,10 @@ public class Main {
         else return true;
     }
 
+    public static void addBattleship() {
+
+    }
+
     public static void placeBattleships(
             int[][] battleships,
             char[][] board,
@@ -182,7 +186,7 @@ public class Main {
                         position = positionByComputer(rows, columns);
                     }
                 } while (!isValidPosition(position, type[1], board, rows, columns, player));
-                addBattleship(board, position);
+                addBattleship(board, position, type[1]);
             }
         }
     }
