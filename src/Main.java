@@ -4,11 +4,18 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
+
     public static Scanner scanner;
     public static Random rnd;
+
     static final char EMPTY = '-';
+    static final char IS_BATTLESHIP = '#';
     static final int HORIZONTAL = 0;
     static final int VERTICAL = 1;
+    static final char GOOD_GUESS = 'V';
+    static final char BAD_GUESS = 'X';
+    static final char HIT_BATTLESHIP = 'X';
+
 
     public static int[] getBoardSize() {
         System.out.println("Enter the board size");
@@ -186,29 +193,161 @@ public class Main {
                         position = positionByComputer(rows, columns);
                     }
                 } while (!isValidPosition(position, type[1], board, rows, columns, player));
-                addBattleship(board, position, type[1]);
+                addBattleship(board, position);
             }
         }
     }
 
-
-    userTurn() {
-        printBoard()
-        while (){
-            getPoint()
-            if (!inBoard()) continue
-            if (!newPoint()) continue
+    public static void printBoard(int row, int col, char[][] borad){
+        int temp_row = row-1;
+        while (temp_row / 10 != 0) {
+            System.out.print(' ');
+            temp_row /= 10;
         }
-        if (!ishit()) {
-            updateBoards()
-            print
+        temp_row = row-1;
+        for (int i = 0 ; i < col; i++) {
+            System.out.print(" " + i);
+        }
+        System.out.println(" ");
+        for (int i = 0; i < row ; i++){
+            while (temp_row/10 != 0) {
+                System.out.print(" ");
+                temp_row /= 10;
+            }
+            System.out.print(i);
+            for (int j = 0; j < col ; j++){
+                System.out.print(" "+borad[i][j]);
+            }
+            System.out.println(" ");
+        }
+    }
+    public static int outBoard(int row, int col, int x, int y) {
+        if (x < 0 || y < 0 || x > row-1 || y > col -1) {
+            return 0;
+        }
+        return 1;
+    }
+    public static int newPoint(int x, int y, char[][] userGuessingBorad) {
+        if (userGuessingBorad[x][y] == EMPTY) {
+            return 1;
+        }
+        return 0;
+    }
+    public static int isHit(int x, int y, char[][] ComputerGameBorad){
+        if (ComputerGameBorad[x][y] == IS_BATTLESHIP) {
+            return 1;
+        }
+        return 0;
+    }
+    public static void updateBoards (int x, int y, char[][] borad, char updateSign){
+        borad[x][y] = updateSign;
+    }
+    public static int isDrowned(int row , int col, int x, int y, char[][] borad){
+        if ((x > 0 && borad[x-1][y] == EMPTY) && (x < row-1 && borad[x+1][y] == EMPTY)){
+            int new_y = y;
+            while (new_y > 0 && borad[x][new_y] != EMPTY)  {
+                if (borad[x][new_y-1] == IS_BATTLESHIP) {
+                    return 0;
+                }
+                new_y--;
+            }
+            new_y = y;
+            while (new_y < col-1 && borad[x][new_y] != EMPTY) {
+                if (borad[x][new_y-1+1] == IS_BATTLESHIP) {
+                    return 0;
+                }
+                new_y++;
+            }
+        }
+        if ((y > 0 && borad[x][y-1] == EMPTY) && (y < col-1 && borad[x][y+1] == EMPTY)){
+            System.out.println("if 2");
+            int new_x = x;
+            while (new_x > 0 && borad[new_x][y] != EMPTY) {
+                if (borad[new_x-1][y] == IS_BATTLESHIP) {
+                    return 0;
+                }
+                new_x--;
+            }
+            new_x = x;
+            while (new_x < row-1 && borad[new_x][y] != EMPTY) {
+                if (borad[new_x+1][y] == IS_BATTLESHIP) {
+                    return 0;
+                }
+                new_x++;
+            }
+        }
+        return 1;
+    }
+    public static int userTurn(char[][] userGuessingBorad, char[][] ComputerGameBorad, int r, int row , int col) {
+        System.out.println("Your current guessing board:");
+        printBoard(row,col,userGuessingBorad);
+        boolean goodPoint = true;
+        int x = 0, y = 0;
+        while (goodPoint) {
+            System.out.println("Enter a tile to attack");
+            Scanner scanner = new Scanner(System.in);
+            String getPointString = scanner.nextLine();
+            String[] getPointArr = getPointString.split(",",2);
+            x = Integer.parseInt(getPointArr[0]);
+            y = Integer.parseInt(getPointArr[1]);
+
+            if (outBoard(row, col , x, y) != 0){
+                System.out.println("Illegal tile, try again!");
+                continue;
+            }
+            if (newPoint(x,y,userGuessingBorad) == 0){
+                System.out.println("Tile already attacked, try again!");
+                continue;
+            }
+            goodPoint = false;
+        }
+
+        if (isHit(x,y,ComputerGameBorad) == 0) {
+            System.out.println("That is a miss!");
+            updateBoards(x,y, userGuessingBorad, BAD_GUESS);
         }
         else {
-            updateBoards()
-            isdrowned()
-
+            System.out.println("That is a hit!");
+            updateBoards(x,y, userGuessingBorad, GOOD_GUESS);
+            updateBoards(x,y, ComputerGameBorad, HIT_BATTLESHIP);
+            if (isDrowned(row, col ,x ,y , ComputerGameBorad) == 1){
+                r--;
+                System.out.println("The computer's battleship has been drowned,"+r+" more battleships to go!");
+            }
         }
+        return r;
+    }
+    public static int ComputerTurn(char[][] ComputerGuessingBorad, char[][] userGameBorad, int r, int row , int col) {
+        boolean goodPoint = true;
+        int x = 0, y = 0;
+        while (goodPoint) {
+            Random rn1 = new Random();
+            x = rn1.nextInt((row-1) - 0);
+            Random rn2 = new Random();
+            y = rn2.nextInt((col-1) - 0);
 
+            if (outBoard(row, col , x, y) == 1){
+                continue;
+            }
+            goodPoint = false;
+        }
+        System.out.println("The computer attacked ("+x+","+y+")!");
+        if (isHit(x,y,userGameBorad) == 0) {
+            System.out.println("That is a miss!");
+            updateBoards(x,y, ComputerGuessingBorad, BAD_GUESS);
+        }
+        else {
+            System.out.println("That is a hit!");
+            updateBoards(x,y, ComputerGuessingBorad, GOOD_GUESS);
+            updateBoards(x,y, userGameBorad, HIT_BATTLESHIP);
+            if (isDrowned(row, col ,x ,y , userGameBorad) == 1){
+                r--;
+                System.out.println("The computer's battleship has been drowned," +r+ " more battleships to go!");
+            }
+        }
+        System.out.println("Your current game board:");
+        printBoard(row,col,userGameBorad);
+        return r;
     }
 
 
