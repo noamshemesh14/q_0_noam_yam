@@ -18,10 +18,10 @@ public class Main {
 
 
     /**
-     * Gets board size. rows (r) and columns (c) numbers, 
+     * Gets board size from the user. Get rows (r) and columns (c) numbers,
      * in the following format as a string: "rXc".
      * 
-     * @return an array of 2 integers 
+     * @return an array of 2 integers in the following order: {rows, columns}.
      */
     public static int[] getBoardSize() {
         System.out.println("Enter the board size");
@@ -35,11 +35,11 @@ public class Main {
     }
 
     /**
-     * Creates a board, 2D array, of chars '-'
+     * Creates a board, 2D array, of chars '-'.
      *
-     * @param rows the number of rows in the board
-     * @param columns the number of columns in the board
-     * @return an empty game or guessing board filled with '-' char
+     * @param rows the number of rows in the board.
+     * @param columns the number of columns in the board.
+     * @return an empty game or guessing board filled with '-' char.
      */
     public static char[][] createBoard(int rows, int columns) {
         char[][] board = new char[rows][columns];
@@ -51,6 +51,13 @@ public class Main {
         return board;
     }
 
+    /**
+     * Gets the description of battleships amounts and sizes from the user.
+     * Gets input in the following format as a string "n1Xs1 n2Xs2 .. nkXsk",
+     * representing nk battleships of size sk.
+     *
+     * @return an array of 2 sized int arrays. each one represents {amount of battleships, size}.
+     */
     public static int[][] getBattleships() {
         String input = scanner.nextLine();
         String[] tempBattleships = input.split(" ");
@@ -63,6 +70,14 @@ public class Main {
         return battleships;
     }
 
+    /**
+     * Counts the amount of battleships each player has at the beginning of the game
+     * as determined by the user.
+     * Sums the amount of battleships from each size (referred as types).
+     *
+     * @param battleships an array of 2 sized int arrays. each one represents {amount of battleships, size}.
+     * @return the amount of battleships each player has at the beginning of the game.
+     */
     public static int countBattleships(int[][] battleships) {
         int amount = 0;
         for (int[] type : battleships) {
@@ -71,6 +86,13 @@ public class Main {
         return amount;
     }
 
+    /**
+     * Gets the position of each battleship, tile and orientation, from the user.
+     * Gets position as a string "row,column,orientation".
+     *
+     * @param size the size of the battleship which the user needs to place.
+     * @return the position of the battleships as a 3 sized int array as following: {row, column, orientation}.
+     */
     public static int[] positionByUser(int size) {
         System.out.println("Enter location and orientation for battleship of size" + size);
         String input = scanner.nextLine();
@@ -82,6 +104,15 @@ public class Main {
         return position;
     }
 
+    /**
+     * Gets the position of each battleship, tile and orientation, from the computer.
+     * Generates 3 random integers for row, column and orientation.
+     * Row and column are in board range, orientation can be 0/1.
+     *
+     * @param rows the number of rows in the game board.
+     * @param columns the number of columns in the game board.
+     * @return the position of the battleships as a 3 sized int array as following: {row, column, orientation}.
+     */
     public static int[] positionByComputer(int rows , int columns) {
         int[] position = new int[3];
         position[0] = rnd.nextInt(rows-1);
@@ -90,10 +121,26 @@ public class Main {
         return position;
     }
 
+    /**
+     * Checks if the given battleship orientation is valid (0 or 1).
+     *
+     * @param orientation the orientation of the battleship.
+     * @return true if the orientation is 0 (horizontal) or 1 (vertical).
+     */
     public static boolean isLegalOrientation(int orientation) {
         return orientation == HORIZONTAL || orientation == VERTICAL;
     }
 
+    /**
+     * Checks if the tile given by the player, is in the game board.
+     * The tile only represents the place where the battleship starts.
+     *
+     * @param row the number of the tile row.
+     * @param column the number of the tile column.
+     * @param rowsNum the number of rows in the game board.
+     * @param columnsNum the number of columns in the game board.
+     * @return true if the tile is in the boards borders.
+     */
     public static boolean isLegalTile(int row, int column, int rowsNum, int columnsNum) {
         if (row < 0 || row >= rowsNum)
             return false;
@@ -102,20 +149,38 @@ public class Main {
         return true;
     }
 
+    /**
+     * Checks if the whole battleships is in the board borders.
+     *
+     * @param position the position of the battleship as a 3 sized int array as following:
+     *                 {row, column, orientation}.
+     * @param size the size of the battleship.
+     * @param rowsNum the number of rows in the game board.
+     * @param columnsNum the number of rows in the game board.
+     * @return true if the whole battleships is in the board borders.
+     */
     public static boolean isInBoard(int[] position,int size, int rowsNum, int columnsNum) {
-        if (position[2] == HORIZONTAL) { // position[2]: orientation
-            if (position[1]+size-1 >= columnsNum) // position[1]: column
+        if (position[2] == HORIZONTAL) {
+            if (position[1]+size-1 >= columnsNum)
                 return false;
         }
         else if (position[2] == VERTICAL) {
-            if (position[0]+size-1 >= rowsNum) // position[0]: row
+            if (position[0]+size-1 >= rowsNum)
                 return false;
         }
         return true;
     }
 
+    /** Checks if the battleships is placed over another battleship.
+     *
+     * @param position the position of the battleship as a 3 sized int array as following:
+     *                 {row, column, orientation}.
+     * @param size the size of the battleship.
+     * @param board the 2D array of chars representing the current battleships placing.
+     * @return true if the battleships is placed over another battleship.
+     */
     public static boolean isOverlapping(int[] position,int size, char[][] board) {
-        if (position[2] == HORIZONTAL) { // position[2]: orientation
+        if (position[2] == HORIZONTAL) {
             for (int i=0; i<size; i++) {
                 if (board[position[0]][position[1] + i] != EMPTY)
                     return true;
@@ -130,6 +195,16 @@ public class Main {
         return false;
     }
 
+    /**
+     * Checks if the battleships is placed near another battleship (adjoining).
+     * It is assumed that the battleships place on board has been checked and is empty.
+     *
+     * @param position the position of the battleship as a 3 sized int array as following:
+     *                 {row, column, orientation}.
+     * @param size the size of the battleship.
+     * @param board the 2D array of chars representing the current battleships placing.
+     * @return true if the battleships is placed nearby another battleship.
+     */
     public static boolean isAdjacent(int[] position,int size, char[][] board) {
         int rows = board.length;
         int columns = (board[0]).length;
@@ -155,6 +230,17 @@ public class Main {
         return false;
     }
 
+    /**
+     * Checks if the position given by the player is valid by the game rules.
+     * If the player is the user and not the computer there are additional print commands.
+     *
+     * @param position the position of the battleship as a 3 sized int array as following:
+     *                 {row, column, orientation}.
+     * @param size the size of the battleship.
+     * @param board the 2D array of chars representing the current battleships placing.
+     * @param player the name of the player as a string, "user" or "computer".
+     * @return true if the position given by the player is valid.
+     */
     public static boolean isValidPosition(int[] position, int size, char[][] board, String player ) {
         int rows = board.length;
         int columns = (board[0]).length;
@@ -187,6 +273,14 @@ public class Main {
         else return true;
     }
 
+    /**
+     * Adds a battleships to the game board by its given position and size.
+     *
+     * @param position the position of the battleship as a 3 sized int array as following:
+     *                 {row, column, orientation}.
+     * @param size size the size of the battleship.
+     * @param board the 2D array of chars representing the current battleships placing.
+     */
     public static void addBattleship(int[] position, int size, char[][] board) {
         for (int i=0 ; i<size ; i++) {
             if (position[2] == HORIZONTAL)
@@ -196,6 +290,15 @@ public class Main {
         }
     }
 
+    /**
+     * Places all battleships by a player at the beginning of the game in a valid way.
+     * Takes battleships position by the player until a valid position is given.
+     * If the player is the user and not the computer there are additional print commands.
+     *
+     * @param battleships an array of 2 sized int arrays. each one represents {amount of battleships, size}.
+     * @param board the 2D array of chars representing the current battleships placing.
+     * @param player the name of the player as a string, "user" or "computer".
+     */
     public static void placeBattleships(
             int[][] battleships,
             char[][] board,
@@ -377,6 +480,9 @@ public class Main {
     }
 
 
+    /**
+     * A single round of battleship game of the user against the computer.
+     */
     public static void battleshipGame() {
 
         int boardSize[] = getBoardSize();
