@@ -63,7 +63,7 @@ public class Main {
         System.out.println("Enter the battleships sizes");
         String input = scanner.nextLine();
         String[] tempBattleships = input.split(" ");
-        int[][] battleships = new int[tempBattleships.length][2]; // leagal?? its an attribute
+        int[][] battleships = new int[tempBattleships.length][2];
         for (int i=0 ; i < tempBattleships.length ; i++) {
             String[] temp = (tempBattleships[i]).split("X");
             battleships[i][0] = Integer.parseInt(temp[0]);
@@ -330,15 +330,15 @@ public class Main {
     }
 
     /**
-     * Count digit number
+     * Counts the digits amount of the number
      *
-     * @param num number to check
-     * @return The number's number of digit
+     * @param number the number
+     * @return The amount of digits in the number
      */
-    public static int countDigits(int num) {
+    public static int countDigits(int number) {
         int digits = 1;
-        while (num/10 !=0) {
-            num /= 10;
+        while (number/10 !=0) {
+            number /= 10;
             digits++;
         }
         return digits;
@@ -377,10 +377,10 @@ public class Main {
     }
 
     /**
-     * Checks if the given tile to be attacked has been attacked before
+     * Checks if the given tile to be attacked has been attacked before.
      *
-     * @param x the attack tile row index.
-     * @param y the attack tile column index.
+     * @param x the attack tile's row index.
+     * @param y the attack tile's column index.
      * @param userGuessingBoard the 2D array of chars representing the player's
      *                          current guessing board.
      * @return true if the given tile hasn't been attacked yet.
@@ -403,25 +403,25 @@ public class Main {
     }
 
     /**
-     * Change the sige in the borad game after the attack
+     * Changes the sign in the guessing board after the attack.
      *
-     * @param x the attack tile row index.
-     * @param y the attack tile column index.
+     * @param x the attack tile's row index.
+     * @param y the attack tile's column index.
      * @param board the 2D array of chars representing the player's/computer's
      *              current guessing board or game board
-     * @param updateSign update the tile after the attack
+     * @param updateSign update the tile after the attack.
      */
     public static void updateBoards (int x, int y, char[][] board, char updateSign) {
         board[x][y] = updateSign;
     }
 
     /**
-     *Checks in the tile's rows if some parts of the battleship remains.
+     *Checks in the tile's rows if some parts of the battleship remained.
      *
      * @param x the attack tile row index.
      * @param y the attack tile column index.
-     * @param gameBoard the 2D array of chars representing the player's/computer's game board
-     * @return False if there are some parts of the battleship remains in the tile's rows and otherwise True
+     * @param gameBoard the 2D array of chars representing the player's or computer's game board.
+     * @return False if some parts of the battleship remained in the tile's rows and otherwise True.
      */
     public static boolean foundRemainsInRow(int x, int y, char[][] gameBoard) {
         int columns = gameBoard[0].length;
@@ -444,12 +444,12 @@ public class Main {
     }
 
     /**
-     *Checks in the tile's columns if some parts of the battleship remains.
+     *Checks in the tile's columns if some parts of the battleship remained.
      *
-     * @param x the attack tile row index.
-     * @param y the attack tile column index.
-     * @param gameBoard the 2D array of chars representing the player's/computer's game board
-     * @return False if there are some parts of the battleship remains in the tile's columns and otherwise True
+     * @param x the attack tile's row index.
+     * @param y the attack tile's column index.
+     * @param gameBoard the 2D array of chars representing the player's or computer's game board.
+     * @return False if some parts of the battleship remained in the tile's columns and otherwise True.
      */
     public static boolean foundRemainsInColumn(int x, int y, char[][] gameBoard) {
         int rows = gameBoard.length;
@@ -472,13 +472,13 @@ public class Main {
     }
 
     /**
-     *Checks if the battleship has been drowned, it's happens when there are no part of the battleship in
+     *Checks if the battleship has been drowned, it happens when there are no part of the battleship in
      * the tile's row and columns
      *
-     * @param x the attack tile row index.
-     * @param y the attack tile column index.
-     * @param board the 2D array of chars representing the player's/computer's game board
-     * @return False if the battleship drowned and otherwise True
+     * @param x the attack tile's row index.
+     * @param y the attack tile's column index.
+     * @param board the 2D array of chars representing the player's or computer's game board.
+     * @return False if the battleship drowned and otherwise True.
      */
     public static boolean isDrowned(int x, int y, char[][] board){
         if ( foundRemainsInRow(x, y, board) || foundRemainsInColumn(x, y, board) ) return false;
@@ -486,9 +486,9 @@ public class Main {
     }
 
     /**
-     * Scans the point to attack by the user
+     * Scans the point to attack by the user.
      *
-     * @return array of the point to attack
+     * @return array of 2 integers representing  the point to attack by format {row,column},
      */
     public static int[] getPointByUser() {
         String input = scanner.nextLine();
@@ -501,14 +501,14 @@ public class Main {
     }
 
     /**
-     *Check if the tile to attack by the user is legal -
-     * if the tile is in the board game and if has been attacked before.
+     * Checks if the attack point given by the user is legal,
+     * if the point is in the board game, and if has been attacked before.
      *
-     * @param x the attack tile row index.
-     * @param y the attack tile column index.
-     * @param guessingBoard the 2D array of chars representing the player's/computer's current guessing board
+     * @param x the attack tile's row index.
+     * @param y the attack tile's column index.
+     * @param guessingBoard the 2D array of chars representing the player's or computer's current guessing board.
      * @param player the name of the player as a string, "user" or "computer".
-     * @return True if the tile is legal and otherwise False
+     * @return True if the tile is legal and otherwise False.
      */
     public static boolean isLegalPoint(int x, int y, char[][] guessingBoard, String player) {
         int rows = guessingBoard.length;
@@ -527,11 +527,11 @@ public class Main {
     }
 
     /**
-     * makes one turn by the user including getting a tile to attack and checking the attack's results.
+     * Makes one turn by the user including getting a tile to attack and checking the attack's results.
      *
-     * @param userGuessingBoard the 2D array of chars representing the player's current guessing board
-     * @param computerGameBoard the 2D array of chars representing the computer's game board
-     * @param computerBattleships battleships number in the computer's game board
+     * @param userGuessingBoard the 2D array of chars representing the player's current guessing board.
+     * @param computerGameBoard the 2D array of chars representing the computer's game board.
+     * @param computerBattleships battleships number in the computer's game board.
      * @return the current battleships number in the computer's game board based on the attack result.
      */
     public static int userTurn(char[][] userGuessingBoard,
@@ -571,11 +571,11 @@ public class Main {
     }
 
     /**
-     * makes one turn by the computer including generating a tile to attack and checking the attack's results.
+     * Makes one turn by the computer including generating a tile to attack and checking the attack's results.
      *
-     * @param computerGuessingBoard the 2D array of chars representing the computer's current guessing board
-     * @param userGameBoard the 2D array of chars representing the player's game board
-     * @param userBattleships battleships number in the player's game board
+     * @param computerGuessingBoard the 2D array of chars representing the computer's current guessing board.
+     * @param userGameBoard the 2D array of chars representing the player's game board.
+     * @param userBattleships battleships number in the player's game board.
      * @return the current battleships number in the player's game board based on the attack result.
      */
     public static int computerTurn(char[][] computerGuessingBoard,
