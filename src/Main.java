@@ -8,7 +8,7 @@ public class Main {
     public static Scanner scanner;
     public static Random rnd;
 
-    static final char EMPTY = '-';
+    static final char EMPTY = '–';
     static final char IS_BATTLESHIP = '#';
     static final int HORIZONTAL = 0;
     static final int VERTICAL = 1;
@@ -60,6 +60,7 @@ public class Main {
      * @return an array of 2 sized int arrays. each one represents {amount of battleships, size}.
      */
     public static int[][] getBattleships() {
+        System.out.println("Enter the battleships sizes");
         String input = scanner.nextLine();
         String[] tempBattleships = input.split(" ");
         int[][] battleships = new int[tempBattleships.length][2]; // leagal?? its an attribute
@@ -91,11 +92,9 @@ public class Main {
      * Gets the position of each battleship, tile and orientation, from the user.
      * Gets position as a string "row,column,orientation".
      *
-     * @param size the size of the battleship which the user needs to place.
      * @return the position of the battleships as a 3 sized int array as following: {row, column, orientation}.
      */
-    public static int[] positionByUser(int size) {
-        System.out.println("Enter location and orientation for battleship of size " + size);
+    public static int[] positionByUser() {
         String input = scanner.nextLine();
         String[] positionAsStr = input.split(", ");
         int[] position = new int[3];
@@ -259,12 +258,12 @@ public class Main {
         }
         if (isOverlapping(position, size, board)) {
             if (player.equals("user"))
-                System.out.println("Battleship overlaps another battleship, try again");
+                System.out.println("Battleship overlaps another battleship, try again!");
             return false;
         }
         if (isAdjacent(position, size, board)) {
             if (player.equals("user"))
-                System.out.println("Adjacent battleship detected, try again");
+                System.out.println("Adjacent battleship detected, try again!");
             return false;
         }
         return true;
@@ -310,10 +309,12 @@ public class Main {
 
         for (int[] type : battleships) {
             for (int i =0 ; i < type[0] ; i++) {
+                if (player.equals("user"))
+                    System.out.println("Enter location and orientation for battleship of size " + type[1]);
                 int[] position = new int[0];
                 do {
                     if (player.equals("user")) {
-                        position = positionByUser(type[1]);
+                        position = positionByUser();
                     }
                     else if (player.equals("computer")) {
                         position = positionByComputer(rows, columns);
@@ -351,7 +352,7 @@ public class Main {
             System.out.print(" ");
         for (int i = 0 ; i < columns; i++)
             System.out.print(" " + i);
-        System.out.println("");
+        System.out.println();
 
         // 2nd and higher rows: board
         for (int i=0; i<rows ; i++) {
@@ -364,8 +365,9 @@ public class Main {
             System.out.print(i);
             for (int j=0 ; j < columns ; j++)
                 System.out.print(" "+board[i][j]);
-            System.out.println("");
+            System.out.println();
         }
+        System.out.println();
     }
 
     /**
@@ -386,12 +388,12 @@ public class Main {
      *
      * @param x the attack tile row index.
      * @param y the attack tile column index.
-     * @param ComputerGameBoard the 2D array of chars representing the computer's
+     * @param computerGameBoard the 2D array of chars representing the computer's
      *                         current battleships placing.
      * @return true if there is a user's battleship in the given tile.
      */
-    public static boolean isHit(int x, int y, char[][] ComputerGameBoard){
-        return (ComputerGameBoard[x][y] == IS_BATTLESHIP);
+    public static boolean isHit(int x, int y, char[][] computerGameBoard){
+        return (computerGameBoard[x][y] == IS_BATTLESHIP);
     }
 
     public static void updateBoards (int x, int y, char[][] board, char updateSign) {
@@ -443,7 +445,6 @@ public class Main {
     }
 
     public static int[] getPointByUser() {
-        System.out.println("Enter a tile to attack");
         String input = scanner.nextLine();
         String[] tempPoint = input.split(", ");
         int[] point = new int[2];
@@ -478,6 +479,7 @@ public class Main {
         System.out.println("Your current guessing board:");
         printBoard(rows, columns, userGuessingBoard);
 
+        System.out.println("Enter a tile to attack");
         int x=0 , y=0;
         do {
             int[] point = getPointByUser();
@@ -497,13 +499,13 @@ public class Main {
 
             if (isDrowned(x ,y , computerGameBoard)) {
                 computerBattelships--;
-                System.out.println("The computer's battleship has been drowned,"+computerBattelships
+                System.out.println("The computer's battleship has been drowned, "+computerBattelships
                         +" more battleships to go!");
             }
         }
         return computerBattelships;
     }
-    public static int ComputerTurn(char[][] computerGuessingBoard,
+    public static int computerTurn(char[][] computerGuessingBoard,
                                    char[][] userGameBoard,
                                    int userBattelships) {
         int rows = computerGuessingBoard.length;
@@ -515,7 +517,7 @@ public class Main {
             y = rnd.nextInt(columns);
         } while (!isLegalPoint(x, y, computerGuessingBoard, "computer"));
 
-        System.out.println("The computer attacked ("+x+","+y+")!");
+        System.out.println("The computer attacked ("+x+", "+y+")");
 
         if (!isHit(x,y,userGameBoard)) {
             System.out.println("That is a miss!");
@@ -542,27 +544,27 @@ public class Main {
      */
     public static void battleshipGame() {
 
-        int boardSize[] = getBoardSize();
+        int[] boardSize = getBoardSize();
         int rows = boardSize[0];
         int columns = boardSize[1];
 
-        char userGameBorad[][] = createBoard(rows, columns);
-        char userGuessingBorad[][] = createBoard(rows, columns);
-        char computerGameBorad[][] = createBoard(rows, columns);
-        char computerGuessingBorad[][] = createBoard(rows, columns);
+        char[][] userGameBoard = createBoard(rows, columns);
+        char[][] userGuessingBoard = createBoard(rows, columns);
+        char[][] computerGameBoard = createBoard(rows, columns);
+        char[][] computerGuessingBoard = createBoard(rows, columns);
 
-        int battleships[][] = getBattleships();
-        placeBattleships(battleships, userGameBorad, "user");
-        placeBattleships(battleships, computerGameBorad, "computer");
+        int[][] battleships = getBattleships();
+        placeBattleships(battleships, userGameBoard, "user");
+        placeBattleships(battleships, computerGameBoard, "computer");
 
         int userBattelships = countBattleships(battleships);
         int computerBattelships = countBattleships(battleships);
 
 
         while (userBattelships > 0 && computerBattelships > 0) {
-            computerBattelships = userTurn(userGuessingBorad, computerGameBorad,computerBattelships);
+            computerBattelships = userTurn(userGuessingBoard, computerGameBoard,computerBattelships);
             if (computerBattelships <= 0) break;
-            userBattelships = ComputerTurn(computerGuessingBorad, userGameBorad , userBattelships);
+            userBattelships = computerTurn(computerGuessingBoard, userGameBoard , userBattelships);
         }
         if (userBattelships == 0)
             System.out.println("You lost ):");
