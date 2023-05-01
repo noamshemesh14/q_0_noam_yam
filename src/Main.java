@@ -563,7 +563,7 @@ public class Main {
 
             if (isDrowned(x ,y , computerGameBoard)) {
                 computerBattleships--;
-                System.out.println("The computer's battleship has been drowned,"+computerBattleships
+                System.out.println("The computer's battleship has been drowned, "+computerBattleships
                         +" more battleships to go!");
             }
         }
@@ -602,7 +602,7 @@ public class Main {
             updateBoards(x,y, userGameBoard, HIT_BATTLESHIP);
             if (isDrowned(x ,y , userGameBoard)){
                 userBattleships--;
-                System.out.println("Your battleship has been drowned, you have left " +userBattelships
+                System.out.println("Your battleship has been drowned, you have left " +userBattleships
                         + " more battleships!");
             }
         }
