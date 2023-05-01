@@ -329,6 +329,12 @@ public class Main {
         }
     }
 
+    /**
+     * Count digit number
+     *
+     * @param num number to check
+     * @return The number's number of digit
+     */
     public static int countDigits(int num) {
         int digits = 1;
         while (num/10 !=0) {
@@ -396,10 +402,27 @@ public class Main {
         return (computerGameBoard[x][y] == IS_BATTLESHIP);
     }
 
+    /**
+     * Change the sige in the borad game after the attack
+     *
+     * @param x the attack tile row index.
+     * @param y the attack tile column index.
+     * @param board the 2D array of chars representing the player's/computer's
+     *              current guessing board or game board
+     * @param updateSign update the tile after the attack
+     */
     public static void updateBoards (int x, int y, char[][] board, char updateSign) {
         board[x][y] = updateSign;
     }
 
+    /**
+     *Checks in the tile's rows if some parts of the battleship remains.
+     *
+     * @param x the attack tile row index.
+     * @param y the attack tile column index.
+     * @param gameBoard the 2D array of chars representing the player's/computer's game board
+     * @return False if there are some parts of the battleship remains in the tile's rows and otherwise True
+     */
     public static boolean foundRemainsInRow(int x, int y, char[][] gameBoard) {
         int columns = gameBoard[0].length;
 
@@ -420,6 +443,14 @@ public class Main {
         return false;
     }
 
+    /**
+     *Checks in the tile's columns if some parts of the battleship remains.
+     *
+     * @param x the attack tile row index.
+     * @param y the attack tile column index.
+     * @param gameBoard the 2D array of chars representing the player's/computer's game board
+     * @return False if there are some parts of the battleship remains in the tile's columns and otherwise True
+     */
     public static boolean foundRemainsInColumn(int x, int y, char[][] gameBoard) {
         int rows = gameBoard.length;
 
@@ -439,11 +470,26 @@ public class Main {
         }
         return false;
     }
+
+    /**
+     *Checks if the battleship has been drowned, it's happens when there are no part of the battleship in
+     * the tile's row and columns
+     *
+     * @param x the attack tile row index.
+     * @param y the attack tile column index.
+     * @param board the 2D array of chars representing the player's/computer's game board
+     * @return False if the battleship drowned and otherwise True
+     */
     public static boolean isDrowned(int x, int y, char[][] board){
         if ( foundRemainsInRow(x, y, board) || foundRemainsInColumn(x, y, board) ) return false;
         else return true;
     }
 
+    /**
+     * Scans the point to attack by the user
+     *
+     * @return array of the point to attack
+     */
     public static int[] getPointByUser() {
         String input = scanner.nextLine();
         String[] tempPoint = input.split(", ");
@@ -454,6 +500,16 @@ public class Main {
 
     }
 
+    /**
+     *Check if the tile to attack by the user is legal -
+     * if the tile is in the board game and if has been attacked before.
+     *
+     * @param x the attack tile row index.
+     * @param y the attack tile column index.
+     * @param guessingBoard the 2D array of chars representing the player's/computer's current guessing board
+     * @param player the name of the player as a string, "user" or "computer".
+     * @return True if the tile is legal and otherwise False
+     */
     public static boolean isLegalPoint(int x, int y, char[][] guessingBoard, String player) {
         int rows = guessingBoard.length;
         int columns = (guessingBoard[0]).length;
@@ -470,9 +526,17 @@ public class Main {
         return true;
     }
 
+    /**
+     * makes one turn by the user including getting a tile to attack and checking the attack's results.
+     *
+     * @param userGuessingBoard the 2D array of chars representing the player's current guessing board
+     * @param computerGameBoard the 2D array of chars representing the computer's game board
+     * @param computerBattleships battleships number in the computer's game board
+     * @return the current battleships number in the computer's game board based on the attack result.
+     */
     public static int userTurn(char[][] userGuessingBoard,
                                char[][] computerGameBoard,
-                               int computerBattelships) {
+                               int computerBattleships) {
         int rows = userGuessingBoard.length;
         int columns = (userGuessingBoard[0]).length;
 
@@ -498,16 +562,25 @@ public class Main {
             updateBoards(x,y, computerGameBoard, HIT_BATTLESHIP);
 
             if (isDrowned(x ,y , computerGameBoard)) {
-                computerBattelships--;
-                System.out.println("The computer's battleship has been drowned, "+computerBattelships
+                computerBattleships--;
+                System.out.println("The computer's battleship has been drowned,"+computerBattleships
                         +" more battleships to go!");
             }
         }
-        return computerBattelships;
+        return computerBattleships;
     }
+
+    /**
+     * makes one turn by the computer including generating a tile to attack and checking the attack's results.
+     *
+     * @param computerGuessingBoard the 2D array of chars representing the computer's current guessing board
+     * @param userGameBoard the 2D array of chars representing the player's game board
+     * @param userBattleships battleships number in the player's game board
+     * @return the current battleships number in the player's game board based on the attack result.
+     */
     public static int computerTurn(char[][] computerGuessingBoard,
                                    char[][] userGameBoard,
-                                   int userBattelships) {
+                                   int userBattleships) {
         int rows = computerGuessingBoard.length;
         int columns = (computerGuessingBoard[0]).length;
 
@@ -528,14 +601,14 @@ public class Main {
             updateBoards(x,y, computerGuessingBoard, GOOD_GUESS);
             updateBoards(x,y, userGameBoard, HIT_BATTLESHIP);
             if (isDrowned(x ,y , userGameBoard)){
-                userBattelships--;
+                userBattleships--;
                 System.out.println("Your battleship has been drowned, you have left " +userBattelships
                         + " more battleships!");
             }
         }
         System.out.println("Your current game board:");
         printBoard(rows,columns,userGameBoard);
-        return userBattelships;
+        return userBattleships;
     }
 
 
@@ -557,16 +630,16 @@ public class Main {
         placeBattleships(battleships, userGameBoard, "user");
         placeBattleships(battleships, computerGameBoard, "computer");
 
-        int userBattelships = countBattleships(battleships);
-        int computerBattelships = countBattleships(battleships);
+        int userBattleships = countBattleships(battleships);
+        int computerBattleships = countBattleships(battleships);
 
 
-        while (userBattelships > 0 && computerBattelships > 0) {
-            computerBattelships = userTurn(userGuessingBoard, computerGameBoard,computerBattelships);
-            if (computerBattelships <= 0) break;
-            userBattelships = computerTurn(computerGuessingBoard, userGameBoard , userBattelships);
+        while (userBattleships > 0 && computerBattleships > 0) {
+            computerBattleships = userTurn(userGuessingBoard, computerGameBoard,computerBattleships);
+            if (computerBattleships <= 0) break;
+            userBattleships = computerTurn(computerGuessingBoard, userGameBoard , userBattleships);
         }
-        if (userBattelships == 0)
+        if (userBattleships == 0)
             System.out.println("You lost ):");
         else
             System.out.println("You won the game!");
