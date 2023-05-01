@@ -143,9 +143,7 @@ public class Main {
      * @return true if the tile is in the boards borders.
      */
     public static boolean isLegalTile(int row, int column, int rowsNum, int columnsNum) {
-        if (row < 0 || column < 0 || row >= rowsNum || column >= columnsNum)
-            return false;
-        else return true;
+        return (row >= 0 && column >= 0 && row < rowsNum && column < columnsNum);
     }
 
     /**
@@ -369,12 +367,6 @@ public class Main {
             System.out.println("");
         }
     }
-    public static int outBoard(int row, int col, int x, int y) { // exactly like isLegalTile
-        if (x < 0 || y < 0 || x > row-1 || y > col -1) {
-            return 0;
-        }
-        return 1;
-    }
 
     /**
      * Checks if the given tile to be attacked has been attacked before
@@ -386,10 +378,7 @@ public class Main {
      * @return true if the given tile hasn't been attacked yet.
      */
     public static boolean isNewPoint(int x, int y, char[][] userGuessingBoard) {
-        if (userGuessingBoard[x][y] == EMPTY) {
-            return true;
-        }
-        return false;
+        return (userGuessingBoard[x][y] == EMPTY);
     }
 
     /**
@@ -402,36 +391,29 @@ public class Main {
      * @return true if there is a user's battleship in the given tile.
      */
     public static boolean isHit(int x, int y, char[][] ComputerGameBoard){
-        if (ComputerGameBoard[x][y] == IS_BATTLESHIP)
-            return true;
-        return false;
+        return (ComputerGameBoard[x][y] == IS_BATTLESHIP);
     }
 
     public static void updateBoards (int x, int y, char[][] board, char updateSign) {
-
         board[x][y] = updateSign;
     }
 
     public static boolean foundRemainsInRow(int x, int y, char[][] gameBoard) {
         int columns = gameBoard[0].length;
 
-        if (x > 0) {
-            int x_step = x;
-            while (x_step > 0 && (gameBoard[x_step-1][y] != EMPTY))  {
-                if (gameBoard[x_step-1][y] == IS_BATTLESHIP) {
-                    return true;
-                }
-                x_step--;
+        int y_step = y;
+        while (y_step > 0 && (gameBoard[x][y_step-1] != EMPTY))  {
+            if (gameBoard[x][y_step-1] == IS_BATTLESHIP) {
+                return true;
             }
+            y_step--;
         }
-        if(x < columns-1) {
-            int x_step = x;
-            while (x_step < columns-1 && (gameBoard[x_step+1][y] != EMPTY))  {
-                if (gameBoard[x_step+1][y] == IS_BATTLESHIP) {
-                    return true;
-                }
-                x_step++;
+        y_step = y;
+        while (y_step < columns-1 && (gameBoard[x][y_step+1] != EMPTY))  {
+            if (gameBoard[x][y_step+1] == IS_BATTLESHIP) {
+                return true;
             }
+            y_step++;
         }
         return false;
     }
@@ -439,28 +421,23 @@ public class Main {
     public static boolean foundRemainsInColumn(int x, int y, char[][] gameBoard) {
         int rows = gameBoard.length;
 
-        if (y > 0) {
-            int y_step = y;
-            while (y_step > 0 && (gameBoard[x][y_step-1] != EMPTY))  {
-                if (gameBoard[x][y_step-1] == IS_BATTLESHIP) {
-                    return true;
-                }
-                y_step--;
+        int new_x = x;
+        while (new_x > 0 && gameBoard[new_x-1][y] != EMPTY) {
+            if (gameBoard[new_x-1][y] == IS_BATTLESHIP) {
+                return true;
             }
+            new_x--;
         }
-        if(y < rows-1) {
-            int y_step = y;
-            while (y_step < rows-1 && (gameBoard[x][y_step+1] != EMPTY))  {
-                if (gameBoard[x][y_step+1] == IS_BATTLESHIP) {
-                    return true;
-                }
-                y_step++;
+        new_x = x;
+        while (new_x < rows-1 && gameBoard[new_x+1][y] != EMPTY) {
+            if (gameBoard[new_x+1][y] == IS_BATTLESHIP) {
+                return true;
             }
+            new_x++;
         }
         return false;
     }
     public static boolean isDrowned(int x, int y, char[][] board){
-
         if ( foundRemainsInRow(x, y, board) || foundRemainsInColumn(x, y, board) ) return false;
         else return true;
     }
